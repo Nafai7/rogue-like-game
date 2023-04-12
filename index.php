@@ -4,9 +4,9 @@ require "Utilis/Router.php";
 
 use Nafai\Utilis\Router;
 
-$Router = new Router();
-$Router->notFound("Views/not_found.php");
-$Router->add("/", "Views/home.php");
-$Router->matchRoute();
+$router = new Router();
+$router->notFound("Views/not_found.php");
+$router->add("/", "Views/home.php");
+$router->matchRoute();
 
 ?>

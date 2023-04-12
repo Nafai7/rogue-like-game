@@ -2,6 +2,8 @@
 
 namespace Nafai\Utilis;
 
+require "Utilis/Loader.php";
+
 class Router {
     private $routes = array();
     private $not_found_view;
@@ -17,7 +19,8 @@ class Router {
     public function matchRoute() {
         foreach ($this->routes as $route => $view) {
             if ($_SERVER["REQUEST_URI"] == $route) {
-                include($view);
+                $loader = new Loader();
+                $loader->loadView($view);
                 exit();
             }
         }
@@ -25,3 +28,5 @@ class Router {
         include($this->not_found_view);
     }
 }
+
+?>
