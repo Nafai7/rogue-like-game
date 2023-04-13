@@ -1,5 +1,7 @@
 <?php
 
+// Router supporting simple routes without parameters
+
 namespace Nafai\Utilis;
 
 require "Utilis/Loader.php";
