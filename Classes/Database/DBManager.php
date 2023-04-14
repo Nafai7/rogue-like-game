@@ -1,6 +1,7 @@
 <?php
 
 // Provides access to database version 1.0
+// All queries are parameterized to avoid sql injections
 
 namespace Nafai\Database;
 
@@ -31,13 +32,12 @@ class DBManager {
 
     //##########Database access##########
 
+    // users
     public function addUser($nickname, $password): bool {
         $sql = self::$mysqli->prepare("INSERT INTO users (nickname, password) VALUES (?,?)");
         $sql->bind_param("ss", $nickname, $password);
-        $result = $sql->execute();
-        $sql->close();
 
-        return $result;
+        return $sql->execute();
     }
 
     public function getUserByNicknameAndPassword($nickname, $password): \mysqli_result {
@@ -45,7 +45,7 @@ class DBManager {
         $sql->bind_param("ss", $nickname, $password);
         $sql->execute();
 
-        return$sql->get_result();
+        return $sql->get_result();
     }
 
     public function getUserById($id): \mysqli_result {
@@ -56,6 +56,37 @@ class DBManager {
         return $sql->get_result();
     }
 
+    // tokens
+    public function addToken($user_id, $token, $expiration): bool {
+        $sql = self::$mysqli->prepare("INSERT INTO tokens (user_id, token, expiration) VALUES (?,?,?)");
+        $sql->bind_param("iss", $user_id, $token, $expiration);
+
+        return $sql->execute();
+    }
+
+    public function getToken($user_id): \mysqli_result {
+        $sql = self::$mysqli->prepare("SELECT token, expiration FROM tokens WHERE user_id = ?");
+        $sql->bind_param("i", $user_id);
+        $sql->execute();
+
+        return $sql->get_result();
+    }
+
+    public function getTokensExpiration($token): \mysqli_result {
+        $sql = self::$mysqli->prepare("SELECT expiration FROM tokens WHERE token = ?");
+        $sql->bind_param("s", $token);
+        $sql->execute();
+
+
+        return $sql->get_result();
+    }
+
+    public function deleteExpiredTokens(): bool {
+        return self::$mysqli->query("DELETE FROM tokens WHERE expiration < CURRENT_DATE()");
+    }
+
+
+    // method overloading
     public function __call($method, $arguments) {
         switch ($method) {
             case "getUser":
