@@ -77,12 +77,42 @@ class DBManager {
         $sql->bind_param("s", $token);
         $sql->execute();
 
-
         return $sql->get_result();
     }
 
     public function deleteExpiredTokens(): bool {
         return self::$mysqli->query("DELETE FROM tokens WHERE expiration < CURRENT_DATE()");
+    }
+
+    // saved_games
+    public function addSavedGame($user_id, $data, $score): int {
+        $sql = self::$mysqli->prepare("INSERT INTO saved_games (user_id, data, score) VALUES (?,?,?)");
+        $sql->bind_param("isi", $user_id, $data, $score);
+        $sql->execute();
+
+        return $sql->insert_id;
+    }
+
+    public function updateSavedGame($id, $data, $score): bool {
+        $sql = self::$mysqli->prepare("UPDATE saved_games SET data = ?, score = ? WHERE id = ?");
+        $sql->bind_param("ssi", $data, $score, $id);
+        
+        return $sql->execute();
+    }
+
+    public function getSavedGames($user_id): \mysqli_result {
+        $sql = self::$mysqli->prepare("SELECT * FROm saved_games WHERE user_id = ?");
+        $sql->bind_param("i", $user_id);
+        $sql->execute();
+
+        return $sql->get_result();
+    }
+
+    public function deleteSavedGame($id): bool {
+        $sql = self::$mysqli->prepare("DELETE FROM saved_games WHERE id = ?");
+        $sql->bind_param("i", $id);
+        
+        return $sql->execute();
     }
 
 
