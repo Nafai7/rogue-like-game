@@ -41,7 +41,7 @@ class DBManager {
     }
 
     public function getUserByNicknameAndPassword($nickname, $password): \mysqli_result {
-        $sql = self::$mysqli->prepare("SELECT * FROM users WHERE nickname = ? AND password = ?");
+        $sql = self::$mysqli->prepare("SELECT * FROM users WHERE nickname = ? AND password = BINARY ?");
         $sql->bind_param("ss", $nickname, $password);
         $sql->execute();
 
@@ -54,6 +54,20 @@ class DBManager {
         $sql->execute();
 
         return $sql->get_result();
+    }
+
+    public function checkIfUserExists($nickname): bool {
+        $sql = self::$mysqli->prepare("SELECT * FROM users WHERE nickname = ?");
+        $sql->bind_param("s", $nickname);
+        $sql->execute();
+        $sql->store_result();
+        echo $sql->num_rows;
+
+        if ($sql->num_rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // tokens
@@ -73,7 +87,7 @@ class DBManager {
     }
 
     public function getTokensExpiration($token): \mysqli_result {
-        $sql = self::$mysqli->prepare("SELECT expiration FROM tokens WHERE token = ?");
+        $sql = self::$mysqli->prepare("SELECT expiration FROM tokens WHERE token BINARY = ?");
         $sql->bind_param("s", $token);
         $sql->execute();
 
