@@ -61,7 +61,6 @@ class DBManager {
         $sql->bind_param("s", $nickname);
         $sql->execute();
         $sql->store_result();
-        echo $sql->num_rows;
 
         if ($sql->num_rows > 0) {
             return true;
