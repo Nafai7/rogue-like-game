@@ -96,8 +96,13 @@ class DBManager {
     public function updateSavedGame($id, $data, $score): bool {
         $sql = self::$mysqli->prepare("UPDATE saved_games SET data = ?, score = ? WHERE id = ?");
         $sql->bind_param("ssi", $data, $score, $id);
+        $sql->execute();
         
-        return $sql->execute();
+        if ($sql->affected_rows > 0) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     public function getSavedGames($user_id): \mysqli_result {
