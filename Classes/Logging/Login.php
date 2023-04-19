@@ -55,7 +55,15 @@ class Login {
             if (count($userData) == 0) {
                 $result["message"] = "Wrong username or password";
             } else {
+                $_COOKIE['user_id'] = $userData[0];
                 $flag = true;
+            }
+
+            if ($_POST['remeberMe']) {
+                $generatedToken = bin2hex(random_bytes(16));
+                if ($db_manager->addToken($_COOKIE['user_id'], $generatedToken, date('Y-m-d', strtotime($Date. ' + 30 days')))) {
+                    $_COOKIE['token'] = $generatedToken;
+                }
             }
         } else {
             $result["message"] = "No credentials";
