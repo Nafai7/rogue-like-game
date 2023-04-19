@@ -1,10 +1,10 @@
 <?php
 
-// Contains
+// Manages account creating and authentication
 
 namespace Nafai\Logging;
 
-require "Classes/Database/DBManager.php";
+require_once "Classes/Database/DBManager.php";
 
 use Nafai\Database\DBManager;
 
@@ -30,8 +30,43 @@ class Login {
         return $result;
     }
     
-    public function login() {
+    public function login(): array {
+        $result = array("success" => 0, "message" => "");
+        $flag = false;
 
+        if (isset($_SESSION['isLogged'])) {
+            $result["message"] = "User already logged in";
+        } else if (isset($_COOKIE['token']) && isset($_COOKIE['user_id'])) {
+            $userTokens = $db_manager->getTokens($_COOKIE['user_id']);
+
+            if (count($userTokens) == 0) {
+                $result["message"] = "No active tokens";
+            } else {
+                foreach ($userTokens as $token) {
+                    if ($token[0] == $_COOKIE['token']) {
+                        $flag = true;
+                        break;
+                    }
+                }
+            }
+        } else if (isset($_POST['username']) && isset($_POST['password'])) {
+            $userData = $db_manager->getUser($_POST['username'], password_hash($_POST['password'], PASSWORD_DEFAULT));
+
+            if (count($userData) == 0) {
+                $result["message"] = "Wrong username or password";
+            } else {
+                $flag = true;
+            }
+        } else {
+            $result["message"] = "No credentials";
+        }
+
+        if ($flag) {
+            $result["success"] = 1;
+            $_SESSION['isLogged'] = true;
+        }
+
+        return $result;
     }
 }
 
