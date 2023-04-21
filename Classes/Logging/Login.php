@@ -19,7 +19,9 @@ class Login {
     public function register($nickname, $password): array {
         $result = array("success" => 0, "message" => "");
 
-        if ($this->db_manager->checkIfUserExists($nickname)) {
+        if (!isset($_POST['username']) || !isset($_POST['password'])) {
+            $result["message"] = "No credentials";
+        } else if ($this->db_manager->checkIfUserExists($nickname)) {
             $result["message"] = "Username taken";
         } else if (!$this->db_manager->addUser($nickname, password_hash($password, PASSWORD_DEFAULT))) {
             $result["message"] = "Failed to register";
@@ -55,14 +57,14 @@ class Login {
             if (count($userData) == 0) {
                 $result["message"] = "Wrong username or password";
             } else {
-                $_COOKIE['user_id'] = $userData[0];
+                setcookie('user_id', $userData[0], date('Y-m-d', strtotime(date('Y-m-d', time()). ' + 30 days')));
                 $flag = true;
             }
 
             if ($_POST['remeberMe']) {
                 $generatedToken = bin2hex(random_bytes(16));
-                if ($db_manager->addToken($_COOKIE['user_id'], $generatedToken, date('Y-m-d', strtotime($Date. ' + 30 days')))) {
-                    $_COOKIE['token'] = $generatedToken;
+                if ($db_manager->addToken($_COOKIE['user_id'], $generatedToken, date('Y-m-d', strtotime(date('Y-m-d', time()). ' + 30 days')))) {
+                    setcookie('token', $generatedToken, date('Y-m-d', strtotime(date('Y-m-d', time()). ' + 30 days')));
                 }
             }
         } else {
@@ -75,6 +77,19 @@ class Login {
         }
 
         return $result;
+    }
+
+    public function logout() {
+        if (isset($_SESSION['isLogged'])) {
+            unset($_SESSION['isLogged']);
+        }
+        if (isset($_COOKIE['token']) && isset($_COOKIE['user_id'])) {
+            unset($_COOKIE['token']);
+            setcookie('token', '', 1);
+
+            unset($_COOKIE['user_id']);
+            setcookie('user_id', '', 1);
+        }
     }
 }
 
