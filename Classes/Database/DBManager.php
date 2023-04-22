@@ -40,15 +40,15 @@ class DBManager {
         return $sql->execute();
     }
 
-    public function getUserByNicknameAndPassword($nickname, $password): array {
-        $sql = self::$mysqli->prepare("SELECT * FROM users WHERE nickname = ? AND password = BINARY ?");
-        $sql->bind_param("ss", $nickname, $password);
+    public function getUserByUsername($nickname): ?array {
+        $sql = self::$mysqli->prepare("SELECT * FROM users WHERE nickname = ?");
+        $sql->bind_param("s", $nickname);
         $sql->execute();
 
         return $sql->get_result()->fetch_array();
     }
 
-    public function getUserById($id): array {
+    public function getUserById($id): ?array {
         $sql = self::$mysqli->prepare("SELECT * FROM users WHERE id = ?");
         $sql->bind_param("i", $id);
         $sql->execute();
@@ -77,7 +77,7 @@ class DBManager {
         return $sql->execute();
     }
 
-    public function getTokens($user_id): array {
+    public function getTokens($user_id): ?array {
         $sql = self::$mysqli->prepare("SELECT token, expiration FROM tokens WHERE user_id = ? AND expiration >= NOW()");
         $sql->bind_param("i", $user_id);
         $sql->execute();
@@ -85,7 +85,7 @@ class DBManager {
         return $sql->get_result()->fetch_all();
     }
 
-    public function getTokensExpiration($token): array {
+    public function getTokensExpiration($token): ?array {
         $sql = self::$mysqli->prepare("SELECT expiration FROM tokens WHERE token BINARY = ?");
         $sql->bind_param("s", $token);
         $sql->execute();
@@ -118,7 +118,7 @@ class DBManager {
         }
     }
 
-    public function getSavedGames($user_id): array {
+    public function getSavedGames($user_id): ?array {
         $sql = self::$mysqli->prepare("SELECT * FROm saved_games WHERE user_id = ?");
         $sql->bind_param("i", $user_id);
         $sql->execute();
@@ -131,21 +131,6 @@ class DBManager {
         $sql->bind_param("i", $id);
         
         return $sql->execute();
-    }
-
-
-    // method overloading
-    public function __call($method, $arguments) {
-        switch ($method) {
-            case "getUser":
-                if (count($arguments) == 1) {
-                    return call_user_func_array(array($this, "getUserById"), $arguments);
-                } else if (count($arguments) == 2) {
-                    return call_user_func_array(array($this, "getUserByNicknameAndPassword"), $arguments);
-                }
-                break;
-
-        }
     }
 
 }
