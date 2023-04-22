@@ -30,6 +30,7 @@ class Loader {
     }
 
     public function loadView($view) {
+        session_start();
         $tmp = explode("/",$view);
         $this->loadHeader(end($tmp));
         include($view.".php");

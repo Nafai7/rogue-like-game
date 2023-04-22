@@ -40,20 +40,33 @@ class DBManager {
         return $sql->execute();
     }
 
-    public function getUserByNicknameAndPassword($nickname, $password): \mysqli_result {
-        $sql = self::$mysqli->prepare("SELECT * FROM users WHERE nickname = ? AND password = ?");
+    public function getUserByNicknameAndPassword($nickname, $password): array {
+        $sql = self::$mysqli->prepare("SELECT * FROM users WHERE nickname = ? AND password = BINARY ?");
         $sql->bind_param("ss", $nickname, $password);
         $sql->execute();
 
-        return $sql->get_result();
+        return $sql->get_result()->fetch_array();
     }
 
-    public function getUserById($id): \mysqli_result {
+    public function getUserById($id): array {
         $sql = self::$mysqli->prepare("SELECT * FROM users WHERE id = ?");
         $sql->bind_param("i", $id);
         $sql->execute();
 
-        return $sql->get_result();
+        return $sql->get_result()->fetch_array();
+    }
+
+    public function checkIfUserExists($nickname): bool {
+        $sql = self::$mysqli->prepare("SELECT * FROM users WHERE nickname = ?");
+        $sql->bind_param("s", $nickname);
+        $sql->execute();
+        $sql->store_result();
+
+        if ($sql->num_rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // tokens
@@ -64,20 +77,20 @@ class DBManager {
         return $sql->execute();
     }
 
-    public function getToken($user_id): \mysqli_result {
-        $sql = self::$mysqli->prepare("SELECT token, expiration FROM tokens WHERE user_id = ?");
+    public function getTokens($user_id): array {
+        $sql = self::$mysqli->prepare("SELECT token, expiration FROM tokens WHERE user_id = ? AND expiration >= NOW()");
         $sql->bind_param("i", $user_id);
         $sql->execute();
 
-        return $sql->get_result();
+        return $sql->get_result()->fetch_all();
     }
 
-    public function getTokensExpiration($token): \mysqli_result {
-        $sql = self::$mysqli->prepare("SELECT expiration FROM tokens WHERE token = ?");
+    public function getTokensExpiration($token): array {
+        $sql = self::$mysqli->prepare("SELECT expiration FROM tokens WHERE token BINARY = ?");
         $sql->bind_param("s", $token);
         $sql->execute();
 
-        return $sql->get_result();
+        return $sql->get_result()->fetch_array();
     }
 
     public function deleteExpiredTokens(): bool {
@@ -105,12 +118,12 @@ class DBManager {
         }
     }
 
-    public function getSavedGames($user_id): \mysqli_result {
+    public function getSavedGames($user_id): array {
         $sql = self::$mysqli->prepare("SELECT * FROm saved_games WHERE user_id = ?");
         $sql->bind_param("i", $user_id);
         $sql->execute();
 
-        return $sql->get_result();
+        return $sql->get_result()->fetch_all();
     }
 
     public function deleteSavedGame($id): bool {
