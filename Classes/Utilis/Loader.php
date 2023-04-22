@@ -5,6 +5,10 @@
 
 namespace Nafai\Utilis;
 
+require_once __DIR__."/../Logging/Login.php";
+
+use Nafai\Logging\Login;
+
 class Loader {
 
     private function loadHeader($view_name) {
@@ -31,9 +35,15 @@ class Loader {
 
     public function loadView($view) {
         session_start();
+
+        $login = new Login();
+        $login->login();
+
         $tmp = explode("/",$view);
         $this->loadHeader(end($tmp));
+
         include($view.".php");
+
         require_once("Views/footer.html");
     }
 }

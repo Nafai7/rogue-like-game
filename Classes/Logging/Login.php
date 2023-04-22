@@ -4,7 +4,7 @@
 
 namespace Nafai\Logging;
 
-require_once "Classes/Database/DBManager.php";
+require_once __DIR__."/../Database/DBManager.php";
 
 use Nafai\Database\DBManager;
 
