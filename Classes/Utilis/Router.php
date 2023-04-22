@@ -4,7 +4,7 @@
 
 namespace Nafai\Utilis;
 
-require "Classes/Utilis/Loader.php";
+require __DIR__."/Loader.php";
 
 class Router {
     private $routes = array();
