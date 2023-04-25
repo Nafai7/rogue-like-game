@@ -53,20 +53,21 @@ class Login {
             }
         } else if (isset($_POST['username']) && isset($_POST['password'])) {
             $userData = $this->db_manager->getUserByUsername($_POST['username']);
+            $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
             
             if (is_null($userData)) {
                 $result["message"] = "Wrong username";
             } else if (!password_verify($_POST['password'], $userData[2])){
                 $result["message"] = "Wrong password";
             } else {
-                setcookie('user_id', $userData[0], strtotime(date('Y-m-d', time()). ' + 30 days'));
+                setcookie('user_id', $userData[0], strtotime(date('Y-m-d', time()). ' + 30 days'), '/', $domain, false);
                 $flag = true;
             }
 
             if (isset($_POST['rememberMe'])) {
                 $generatedToken = bin2hex(random_bytes(16));
                 if ($this->db_manager->addToken($_COOKIE['user_id'], $generatedToken, date('Y-m-d', strtotime(date('Y-m-d', time()). ' + 30 days')))) {
-                    setcookie('token', $generatedToken, strtotime(date('Y-m-d', time()). ' + 30 days'));
+                    setcookie('token', $generatedToken, strtotime(date('Y-m-d', time()). ' + 30 days'), '/', $domain, false);
                 }
             }
         } else {
@@ -86,11 +87,13 @@ class Login {
             unset($_SESSION['isLogged']);
         }
         if (isset($_COOKIE['token']) && isset($_COOKIE['user_id'])) {
+            $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
+
             unset($_COOKIE['token']);
-            setcookie('token', '', 1);
+            setcookie('token', '', 1, '/', $domain, false);
 
             unset($_COOKIE['user_id']);
-            setcookie('user_id', '', 1);
+            setcookie('user_id', '', 1, '/', $domain, false);
         }
     }
 }
