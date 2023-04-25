@@ -26,7 +26,6 @@ form {
 input {
     border: var(--border);
     border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
     padding: 3.5%;
     margin-top: 2%;
     background-color: var(--white);
@@ -37,6 +36,5 @@ input[type=checkbox] {
     padding: 0;
     margin-right: 5%;
     margin-top: -3px;
-    box-shadow: none;
     accent-color: var(--red);
 }

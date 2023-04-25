@@ -1,6 +1,12 @@
+<?php
+if (isset($_SESSION['isLogged'])) {
+    header("Location: /");
+    die();
+}
+?>
+
 <main>
-    <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
-    <form action="/API/Logging/login.php" target="dummyframe">
+    <form>
         <label for="username">Username</label>
         <input type="text" id="username" name="username" placeholder="Username..">
 
@@ -8,10 +14,10 @@
         <input type="password" id="password" name="password" placeholder="Password..">
 
         <div id="remember-container">
-            <input type="checkbox" id="rememberMe" name="rememberMe">
+            <input type="checkbox" id="rememberMe" name="rememberMe" value="true">
             <label for="rememberMe">Remember me</label>
         </div>
 
-        <input type="submit" value="Login">
+        <input type="button" value="Login" onclick="login()">
     </form>
 </main>

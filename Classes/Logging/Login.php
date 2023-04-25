@@ -63,12 +63,10 @@ class Login {
                 $flag = true;
             }
 
-            if (isset($_POST['remeberMe'])) {
-                if ($_POST['remeberMe']) {
-                    $generatedToken = bin2hex(random_bytes(16));
-                    if ($this->db_manager->addToken($_COOKIE['user_id'], $generatedToken, date('Y-m-d', strtotime(date('Y-m-d', time()). ' + 30 days')))) {
-                        setcookie('token', $generatedToken, strtotime(date('Y-m-d', time()). ' + 30 days'));
-                    }
+            if (isset($_POST['rememberMe'])) {
+                $generatedToken = bin2hex(random_bytes(16));
+                if ($this->db_manager->addToken($_COOKIE['user_id'], $generatedToken, date('Y-m-d', strtotime(date('Y-m-d', time()). ' + 30 days')))) {
+                    setcookie('token', $generatedToken, strtotime(date('Y-m-d', time()). ' + 30 days'));
                 }
             }
         } else {
