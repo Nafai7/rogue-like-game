@@ -8,6 +8,7 @@ $router = new Router();
 $router->notFound("Views/not_found");
 $router->add("/", "Views/home");
 $router->add("/login", "Views/login");
+$router->add("/register", "Views/register");
 $router->matchRoute();
 
 ?>
