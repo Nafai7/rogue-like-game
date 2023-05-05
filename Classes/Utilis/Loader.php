@@ -34,8 +34,6 @@ class Loader {
     }
 
     public function loadView($view) {
-        session_start();
-
         $login = new Login();
         $login->login();
 

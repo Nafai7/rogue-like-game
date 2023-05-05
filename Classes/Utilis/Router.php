@@ -27,7 +27,7 @@ class Router {
             }
         }
 
-        include($this->not_found_view);
+        include($this->not_found_view.".php");
     }
 }
 

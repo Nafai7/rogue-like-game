@@ -1,0 +1,66 @@
+:root {
+    --black: rgb(19, 7, 12);
+    --red: rgb(164, 25, 16);
+    --white: rgb(255, 248, 240);
+    --gold: rgb(203, 163, 40);
+    --orange: rgb(213, 137, 54);
+    --border: 2px solid var(--red);
+    --border-radius: 5px;
+    --box-shadow: 0 0 10px 5px var(--red), inset 0 0 10px 3px var(--red);
+}
+
+@font-face {
+    font-family: dungeon font;
+    src: url(../Assets/Fonts/DUNGRG__.TTF);
+}
+
+html {
+    font-family: dungeon font;
+    color: var(--white);
+}
+
+body {
+    margin: 0;
+    background-color: var(--black);
+}
+
+form {
+    position: absolute;
+    width: 200px;
+    height: 22vh;
+    margin: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 2% 6% 2% 6%;
+    border: var(--border);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+#remember-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+input {
+    border: var(--border);
+    border-radius: var(--border-radius);
+    padding: 3.5%;
+    margin-top: 2%;
+    background-color: var(--white);
+}
+
+input[type=checkbox] {
+    margin: 0;
+    padding: 0;
+    margin-right: 5%;
+    margin-top: -3px;
+    accent-color: var(--red);
+}
