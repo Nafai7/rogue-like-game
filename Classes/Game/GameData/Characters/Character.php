@@ -1,8 +1,8 @@
 <?php
 
-namespace Nafai\Game\GameData;
+namespace Nafai\Game\GameData\Characters;
 
-require_once __DIR__."/Actions/Abilities/Ability.php";
+require_once __DIR__."/../Actions/Abilities/Ability.php";
 
 use Nafai\Game\GameData\Actions\Abilities\Ability;
 
