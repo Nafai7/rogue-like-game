@@ -2,7 +2,6 @@
 
 namespace Nafai\Game\GameData\Characters;
 
-
 require_once __DIR__."/Character.php";
 
 use Nafai\Game\GameData\Characters\Character;
@@ -30,7 +29,7 @@ class Player {
         }
         $this->experience += $value;
         
-        $current_exp_threshold = pow(2, $this->character->getLevel()) * 100;
+        $current_exp_threshold = $this->character->getLevel() * 5;
         if ($this->experience > $current_exp_threshold) {
             $this->character->addLevel(1);
             $this->experience -= $current_exp_threshold;
